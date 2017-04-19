@@ -17,6 +17,10 @@ Strong and free charts library from google. Downside is that it's javascript.
 ### JFreeChart
 Old library, so end results are not that pretty. Plus side is that it's free and fully Java
 
+## Where's the beef
+
+The playground itself is in the [MyUI.java](https://github.com/mikotin/different-charts/blob/master/customchart-ui/src/main/java/org/vaadin/sample/MyUI.java) -file. All chart-creation logic is dumped there to keep this playground as easy as possible
+
 # Running the project
 
 To build the widgetsets: (in root directory, the parent module)
