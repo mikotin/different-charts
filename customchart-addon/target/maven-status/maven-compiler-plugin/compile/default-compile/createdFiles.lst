@@ -1,0 +1,4 @@
+org\vaadin\sample\gchart\BarChartState.class
+org\vaadin\sample\gchart\BarChart.class
+org\vaadin\sample\highcharts\AbstractHighChart.class
+org\vaadin\sample\highcharts\HighChartState.class
