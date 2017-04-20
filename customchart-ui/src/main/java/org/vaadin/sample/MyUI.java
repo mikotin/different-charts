@@ -17,9 +17,7 @@ import org.vaadin.addon.JFreeChartWrapper;
 import org.vaadin.sample.gchart.BarChart;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -50,33 +48,29 @@ public class MyUI extends UI {
 
         String xTtitle = "Countries";
         String yTitle = "Population";
+        String subTitle = "of Random population";
 
-        Set<String> headers = backend.getDataSet(Backend.groupType.COUNTRY, Backend.valueType.POPULATION).keySet();
+        HashMap<String, HashMap<String, Number>> dataMap = backend.getDataSet(Backend.groupType.SPECIE, Backend.valueType.POPULATION);
 
-        // Actually same data, but grouping changed
-        // Using both, for data-model of all 3 charts is a bit different (gchart
-        // Could be using the same, but to avoid extra lines of code and confusion let's just create a "better" looking data
-        HashMap<String, HashMap<String, Number>> dataSpecie = backend.getDataSet(Backend.groupType.SPECIE, Backend.valueType.POPULATION);
-        HashMap<String, HashMap<String, Number>> dataCountry = backend.getDataSet(Backend.groupType.COUNTRY, Backend.valueType.POPULATION);
+        // read the lower level groups to string set
+        Set<String> lowlevelGroups = dataMap.values().stream().map(Map::keySet).flatMap(Collection::stream).distinct().collect(Collectors.toSet());
 
         // Initialize charts
 
         // Vaadin chart
-        layout.addComponent(getChart(dataSpecie, headers, "Vaadin Chart", "of Random population", xTtitle, yTitle));
+        layout.addComponent(getChart(dataMap, lowlevelGroups, "Vaadin Chart", subTitle, xTtitle, yTitle));
 
         //HighChart
-        layout.addComponent(getHighChart(dataSpecie, headers, "Highchart", "of Random population", xTtitle, yTitle));
+        layout.addComponent(getHighChart(dataMap, lowlevelGroups, "Highchart", subTitle, xTtitle, yTitle));
 
         // Google visualization
-        layout.addComponent(getGChart(dataCountry, headers, "Google Chart", "of Random population", xTtitle, yTitle));
+        layout.addComponent(getGChart(dataMap, lowlevelGroups, "Google Chart", subTitle, xTtitle, yTitle));
 
         // JChart
-        layout.addComponent(getJChart(dataSpecie, headers, "JChart", "of Random population", xTtitle, yTitle));
+        layout.addComponent(getJChart(dataMap, lowlevelGroups, "JFreeChart", subTitle, xTtitle, yTitle));
 
         setContent(layout);
 
-        // Draw the google chart
-        // gChart.drawChart();
     }
 
     protected HighChart getHighChart(HashMap<String, HashMap<String, Number>> data, Set<String> categories, String Title, String subTitle, String xTtitle, String yTitle) {
@@ -85,6 +79,7 @@ public class MyUI extends UI {
         chart.setSizeFull();
 
         // a single entity array to enable use of string within lambda functions
+        // And really: should use a proper way to create json from Java entities, so don't use this horrific aproach in real life
         final String[] options = {"{\n" +
                 "    chart: {\n" +
                 "        type: 'column'\n" +
@@ -155,19 +150,32 @@ public class MyUI extends UI {
     }
 
     protected BarChart getGChart(HashMap<String, HashMap<String, Number>> data, Set<String> categories, String Title, String subTitle, String xTtitle, String yTitle) {
+        // google dataset model is just "the other way round" then the others
+        // so let's reverse the hashmap
+        HashMap<String, HashMap<String, Number>> reverseData = new HashMap<>();
+        data.forEach((highKey, subMap) -> {
+            subMap.forEach((lowKey, value) -> {
+                if (!reverseData.containsKey(lowKey)) {
+                    reverseData.put(lowKey, new HashMap<>());
+                }
+                reverseData.get(lowKey).put(highKey, value);
+            } );
+        });
         // Make custom-made google bar chart
         BarChart chart = new BarChart(Title, subTitle);
 
         // Add headers
         ArrayList<String> barHeaders = new ArrayList<>();
         barHeaders.add(xTtitle);
-        for (String c : categories) {
+        // luckily the old data set now has the categories in keyset
+        for (String c : data.keySet()) {
             barHeaders.add(c);
         }
+
         chart.addHeaders(barHeaders);
 
         // add data
-        data.forEach((s, stringNumberHashMap) -> {
+        reverseData.forEach((s, stringNumberHashMap) -> {
             ArrayList<String> valueData = new ArrayList<>();
             valueData.add(s);
             stringNumberHashMap.forEach((s1, number) -> {

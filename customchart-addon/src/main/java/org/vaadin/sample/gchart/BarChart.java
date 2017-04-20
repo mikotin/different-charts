@@ -34,7 +34,7 @@ public class BarChart extends AbstractJavaScriptComponent {
      *
      * as: {'x-axis name', '1st type name', '2nd type name', '3rd type name'....}
      * ie: {"Year", "mice population", "mole population", "owl population"}
-     * @param chartHeaders
+     * @param chartHeaders as: {'x-axis name', '1st type name', '2nd type name', '3rd type name'....}
      */
     public void addHeaders(List<String> chartHeaders) {
         getState().headers = chartHeaders;
@@ -45,7 +45,7 @@ public class BarChart extends AbstractJavaScriptComponent {
      *
      * as: {'group name', 'val1', 'val2', val3' ... }
      * ie: {"2016", 801000, 750345, 8435}
-     * @param chartValues
+     * @param chartValues as: {'group name', 'val1', 'val2', val3' ... }
      */
     public void addValues(List<String> chartValues) {
         getState().values.add(chartValues);
