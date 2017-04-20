@@ -24,10 +24,11 @@ import java.util.stream.Collectors;
  * Playing with charts with Vaadin
  *
  * Uses super-simplified "backend" to fetch fixed data
- * Then draws the same data with 3 different approach:
+ * Then draws the same data with 4 different approach:
  * 1. Vaadin Chart
- * 2. Google Chart (Google Visualization)
- * 3. JFreeChart
+ * 2. HighChart
+ * 3. Google Chart (Google Visualization)
+ * 4. JFreeChart
  */
 @SpringUI
 public class MyUI extends UI {
@@ -66,7 +67,7 @@ public class MyUI extends UI {
         // Google visualization
         layout.addComponent(getGChart(dataMap, lowlevelGroups, "Google Chart", subTitle, xTtitle, yTitle));
 
-        // JChart
+        // JFreeChart
         layout.addComponent(getJChart(dataMap, lowlevelGroups, "JFreeChart", subTitle, xTtitle, yTitle));
 
         setContent(layout);

@@ -31,9 +31,9 @@ public class Backend {
     }
 
     /**
-     * Get years available in source data
+     * Get countries available in source data
      *
-     * @return list of years (Integers)
+     * @return list of countries
      */
     public List<String> getAvailableCountries() {
         ArrayList<String> countries = new ArrayList<>();
@@ -52,7 +52,18 @@ public class Backend {
 
     /**
      * Returns 2-level grouped value set grouped by (higher level) either country or specie with value of population or avarage income
-     *
+     * For instance grouping by specie for value of population, might return something like:
+     * HashMap<String, HashMap<String, Number>>
+     *     {
+     *         "Orc" => {
+     *             "Orcland" => 1242530,
+     *             "Elfland" => 52515
+     *         },
+     *         "Elf" => {
+     *             "Orcland" => 2145,
+     *             "Elfland" => 351534
+     *         }
+     *     }
      * @param group
      * @param value
      * @return
