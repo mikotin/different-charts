@@ -1,8 +1,5 @@
 package org.vaadin.sample;
 
-//import com.vaadin.addon.charts.model.DataSeries;
-//import com.vaadin.addon.charts.model.DataSeriesItem;
-
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.Statement;
